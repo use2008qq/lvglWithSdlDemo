@@ -10,23 +10,13 @@
 #endif
 #include "lvgl.h"
 #include "sdl/sdl.h"
+#include "demos/lv_demos.h"
 
 static int demo_status;
 
 static void demo_release(int signal) {
-    printf("get singal[%d]\n", signal);
+    printf("Received signal [%d]\n", signal);
     demo_status = 0;
-}
-
-static void create_ui(void) {
-    lv_obj_t *btn = lv_btn_create(lv_scr_act());
-    lv_obj_t *lbl = lv_label_create(btn);
-    lv_obj_set_style_text_font(lbl, &lv_font_simsun_16_cjk, 0);
-
-    lv_label_set_text(lbl, "Hello world! 歡迎");
-
-    lv_obj_center(lbl);
-    lv_obj_center(btn);
 }
 
 static void driver_init(void) {
@@ -35,9 +25,9 @@ static void driver_init(void) {
     static lv_disp_draw_buf_t disp_buf;
 
     /*Static or global buffer(s). The second buffer is optional*/
-    static lv_color_t *buf_1[BUFFER_SIZE] = {0};
+    static lv_color_t buf_1[BUFFER_SIZE];
 
-    /*Initialize `disp_buf` with the buffer(s). With only one buffer use NULL instead buf_2 */
+    /*Initialize `disp_buf` with the buffer(s). With only one buffer use NULL instead of buf_2 */
     lv_disp_draw_buf_init(&disp_buf, buf_1, NULL, BUFFER_SIZE);
 
     static lv_disp_drv_t disp_drv;         /*A variable to hold the drivers. Must be static or global.*/
@@ -58,7 +48,6 @@ static void driver_init(void) {
 }
 
 int main(void) {
-
     demo_status = 1;
     signal(SIGINT, demo_release);
     signal(SIGTERM, demo_release);
@@ -67,9 +56,11 @@ int main(void) {
     sdl_init();
 
     driver_init();
-    create_ui();
 
-    while(demo_status) {
+    /* Start the LVGL benchmark demo */
+    lv_demo_benchmark();
+
+    while (demo_status) {
         // Run LVGL engine
         lv_tick_inc(1);
         lv_timer_handler();
