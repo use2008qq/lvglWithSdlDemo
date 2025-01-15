@@ -15,6 +15,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 ```
 Compile
 ```shell
-cmake --build build --target all package --config Release
+cmake --build build --target all package --config Release -- -j$(nproc)
+
 ```
 Then, there is one `LvglWithSdlDemo` binary under build/output/bin could show hello for you.
